@@ -1,0 +1,45 @@
+clusterDNS: default.svc.cluster.local
+
+clickhouse:
+  replicaCount: 2
+  repository: altinity/clickhouse-server:21.8.10.1.altinitystable
+  tag: latest
+  pullPolicy: Always
+
+  resources:
+    limits:
+      cpu: 125m
+      memory: 256Mi
+    requests:
+      cpu: 125m
+      memory: 256Mi
+
+  persistence:
+    mountPath: /var/lib/clickhouse
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
+
+# clickhouse-client
+client:
+  enabled: true
+
+# zookeeper
+zookeeper:
+  repository: gcr.io/google_samples/k8szk
+  tag: v1
+  replicaCount: 2
+
+  resources:
+    limits:
+      cpu: 125m
+      memory: 256Mi
+    requests:
+      cpu: 125m
+      memory: 256Mi
+
+  persistence:
+    mountPath: /var/lib/zookeeper
+    accessModes:
+      - ReadWriteOnce
+    size: 1Gi
