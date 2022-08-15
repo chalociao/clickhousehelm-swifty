@@ -2,9 +2,16 @@ clusterDNS: default.svc.cluster.local
 
 clickhouse:
   replicaCount: 2
-  repository: altinity/clickhouse-server:21.8.10.1.altinitystable
+  repository: pltvs/clickhouse-server
   tag: latest
   pullPolicy: Always
+  writerPass: <password>
+  readerPass: <password>
+
+  lb:
+    enabled: false
+    restPort: 8123
+    rpcPort: 9000
 
   resources:
     limits:
@@ -14,13 +21,37 @@ clickhouse:
       cpu: 125m
       memory: 256Mi
 
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
   persistence:
+    ## The path the volume will be mounted at
     mountPath: /var/lib/clickhouse
+
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    # storageClass: "ssd"
     accessModes:
       - ReadWriteOnce
     size: 1Gi
 
-# clickhouse-client
+  ## Node selector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+
+  ## Affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+
+  ## Tolerations
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+# deploys clickhouse-client
 client:
   enabled: true
 
@@ -38,8 +69,39 @@ zookeeper:
       cpu: 125m
       memory: 256Mi
 
+  ## Enable persistence using Persistent Volume Claims
+  ## ref: http://kubernetes.io/docs/user-guide/persistent-volumes/
+  ##
   persistence:
+    ## The path the volume will be mounted at
     mountPath: /var/lib/zookeeper
+
+    ## Persistent Volume Storage Class
+    ## If defined, storageClassName: <storageClass>
+    ## If set to "-", storageClassName: "", which disables dynamic provisioning
+    ## If undefined (the default) or set to null, no storageClassName spec is
+    ##   set, choosing the default provisioner.  (gp2 on AWS, standard on
+    ##   GKE, AWS & OpenStack)
+    # storageClass: "ssd"
     accessModes:
       - ReadWriteOnce
     size: 1Gi
+
+  ## Node selector
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#nodeselector
+  nodeSelector: {}
+
+  ## Affinity
+  ## ref: https://kubernetes.io/docs/concepts/configuration/assign-pod-node/#affinity-and-anti-affinity
+  affinity: {}
+
+  ## Tolerations
+  ## ref: https://kubernetes.io/docs/concepts/configuration/taint-and-toleration/
+  tolerations: []
+
+# tabix.io web UI
+tabix:
+  enabled: false
+  lb:
+    enabled: false
+    port: 8088

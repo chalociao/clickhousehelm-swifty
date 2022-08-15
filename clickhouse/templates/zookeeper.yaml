@@ -112,4 +112,3 @@ spec:
       resources:
         requests:
           storage: {{ .Values.zookeeper.persistence.size }}
-          
